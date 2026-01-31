@@ -7,17 +7,21 @@ import Button from "../../../components/Button";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
-const product = products[0];
 const defaultPizzaImage = "";
 
 const ProductDetailsScreen = () => {
   const { id } = useLocalSearchParams();
+  const product = products.find((p) => p.id.toString() === id);
   const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
 
   const addToCart = () => {
     if (!product) return;
     console.warn("Add to cart");
   };
+
+  if (!product) {
+    return <Text>Product Missing</Text>;
+  }
 
   return (
     <View style={styles.container}>
