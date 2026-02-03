@@ -14,31 +14,11 @@ export default function MenuLayout() {
         options={{
           title: "Menu",
           headerRight: () => (
-            <Link href="/" asChild>
+            <Link href="/(admin)/menu/create" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
                     name="plus-square-o"
-                    size={25}
-                    color={Colors.light.tint}
-                    style={{ marginRight: 5, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="[id]"
-        options={{
-          title: "Menu",
-          headerRight: () => (
-            <Link href="/" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="pencil"
                     size={25}
                     color={Colors.light.tint}
                     style={{ marginRight: 5, opacity: pressed ? 0.5 : 1 }}
