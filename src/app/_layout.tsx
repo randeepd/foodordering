@@ -12,6 +12,7 @@ import "react-native-reanimated";
 import CartProvider from "../providers/CartProvider";
 
 import { useColorScheme } from "@/src/components/useColorScheme";
+import AuthProvider from "../providers/AuthProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,20 +56,22 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <CartProvider>
-        <Stack>
-          {/* 1. Explicitly add the index screen and put it first */}
-          <Stack.Screen
-            name="index"
-            options={{ title: "Home", headerShown: false }}
-          />
+      <AuthProvider>
+        <CartProvider>
+          <Stack>
+            {/* 1. Explicitly add the index screen and put it first */}
+            <Stack.Screen
+              name="index"
+              options={{ title: "Home", headerShown: false }}
+            />
 
-          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-          <Stack.Screen name="(user)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="cart" options={{ presentation: "modal" }} />
-        </Stack>
-      </CartProvider>
+            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+            <Stack.Screen name="(user)" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="cart" options={{ presentation: "modal" }} />
+          </Stack>
+        </CartProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
