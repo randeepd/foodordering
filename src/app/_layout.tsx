@@ -20,7 +20,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: "index",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -57,6 +57,12 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <CartProvider>
         <Stack>
+          {/* 1. Explicitly add the index screen and put it first */}
+          <Stack.Screen
+            name="index"
+            options={{ title: "Home", headerShown: false }}
+          />
+
           <Stack.Screen name="(admin)" options={{ headerShown: false }} />
           <Stack.Screen name="(user)" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
