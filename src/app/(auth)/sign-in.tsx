@@ -1,5 +1,5 @@
 import { supabase } from "@/src/lib/supabase";
-import { Link, Redirect, Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
 import React, { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import Button from "../../components/Button";
@@ -18,10 +18,6 @@ const SignInScreen = () => {
     });
     if (error) Alert.alert(error.message);
     setIsLoading(false);
-    console.log(data);
-    if (!error) {
-      return <Redirect href={".."} />;
-    }
   }
 
   return (
