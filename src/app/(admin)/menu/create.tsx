@@ -2,8 +2,14 @@ import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  useCreateProduct,
+  useDeleteProduct,
+  useProduct,
+  useUpdateProduct,
+} from "../../../api/products/index";
 
 const CreateScreen = () => {
   const defaultPizzaImage = "";
@@ -11,9 +17,24 @@ const CreateScreen = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState("");
-  const id = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-  const isUpdating = !!id.id;
+  const { data: updatingproduct, isLoading } = useProduct(id);
+
+  useEffect(() => {
+    if (updatingproduct) {
+      setName(updatingproduct.name);
+      setPrice(updatingproduct.price.toString());
+      setImage(updatingproduct.image);
+    }
+  }, [updatingproduct]);
+
+  const { mutate: CreateProduct } = useCreateProduct();
+  const { mutate: UpdateProduct } = useUpdateProduct();
+  const { mutate: DeleteProduct } = useDeleteProduct();
+
+  const isUpdating = !!idString;
 
   const router = useRouter();
 
@@ -45,29 +66,57 @@ const CreateScreen = () => {
     if (!validateInput()) {
       return;
     }
-
-    console.warn("Updating dish");
-    setName("");
-    setPrice("");
-    setImage("");
-    router.back();
+    UpdateProduct(
+      {
+        id,
+        name,
+        price: parseFloat(price),
+        image,
+      },
+      {
+        onSuccess: () => {
+          console.warn("Update dish");
+          setName("");
+          setPrice("");
+          setImage("");
+          router.back();
+        },
+      },
+    );
   };
 
   const onCreate = () => {
     if (!validateInput()) {
       return;
     }
-
-    console.warn("Creating dish");
-    setName("");
-    setPrice("");
-    setImage("");
-    router.back();
+    CreateProduct(
+      {
+        name,
+        price: parseFloat(price),
+        image,
+      },
+      {
+        onSuccess: () => {
+          console.warn("Creating dish");
+          setName("");
+          setPrice("");
+          setImage("");
+          router.back();
+        },
+      },
+    );
   };
 
   const onDelete = () => {
-    console.warn("Deleted");
-    router.back();
+    DeleteProduct(id, {
+      onSuccess: () => {
+        console.warn("Delete dish");
+        setName("");
+        setPrice("");
+        setImage("");
+        router.replace("/(admin)/menu");
+      },
+    });
   };
 
   const confirmDelete = () => {
@@ -86,13 +135,11 @@ const CreateScreen = () => {
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);

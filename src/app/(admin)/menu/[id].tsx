@@ -1,22 +1,35 @@
-import products from "@/assets/data/products";
 import { PizzaSize } from "@/assets/types";
+import { useProduct } from "@/src/api/products";
 import Colors from "@/src/constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
-const defaultPizzaImage = "";
+const defaultPizzaImage =
+  "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 const ProductDetailsScreen = () => {
   const Router = useRouter();
-  const { id } = useLocalSearchParams();
-  const product = products.find((p) => p.id.toString() === id);
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(idString === "string" ? idString : idString[0]);
 
-  if (!product) {
-    return <Text>Product Missing</Text>;
+  const { data: product, error, isLoading } = useProduct(id);
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+  if (error) {
+    return <Text>Failed to fetch products</Text>;
   }
 
   return (
