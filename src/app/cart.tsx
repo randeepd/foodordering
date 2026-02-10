@@ -5,7 +5,7 @@ import CartListItem from "../components/CartListItem";
 import { useCart } from "../providers/CartProvider";
 
 const CartScreen = () => {
-  const { items, total } = useCart();
+  const { items, total, checkOut } = useCart();
   if (items.length == 0) {
     return (
       <View style={{ padding: 10 }}>
@@ -25,7 +25,7 @@ const CartScreen = () => {
       <Text style={{ marginTop: 20, fontSize: 20, fontWeight: "600" }}>
         Total: ${total}
       </Text>
-      <Button text="Checkout" />
+      <Button onPress={checkOut} text="Checkout" />
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );

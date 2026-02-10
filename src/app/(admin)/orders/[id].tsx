@@ -1,18 +1,32 @@
 import { OrderStatusList } from "@/assets/types";
+import { useOrderDetails } from "@/src/api/orders";
 import OrderItemListItem from "@/src/components/OrderItemListItem";
 import Colors from "@/src/constants/Colors";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import orders from "../../../../assets/data/orders";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import OrderListItem from "../../../components/OrderListItem";
 
 const OrderDetailScreen = () => {
-  const { id } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
+  // Ensure we have a single string, even if it comes back as an array
+  const normalizedId = Array.isArray(idString) ? idString[0] : idString;
 
-  const order = orders.find((o) => o.id.toString() === id);
+  // Parse the full string
+  const id = parseFloat(normalizedId);
+  const { data: order, error, isLoading } = useOrderDetails(id);
 
-  if (!order) {
-    return <Text>Order not found!</Text>;
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+  if (error || !order) {
+    return <Text>Not Able to Fetch Order.</Text>;
   }
 
   return (
@@ -56,6 +70,7 @@ const OrderDetailScreen = () => {
                 </Pressable>
               ))}
             </View>
+            <Text style={{ fontWeight: "bold" }}>Total: {order.total}</Text>
           </>
         )}
       />

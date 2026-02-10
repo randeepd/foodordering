@@ -19,13 +19,11 @@ const defaultPizzaImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 const ProductDetailsScreen = () => {
-  const Router = useRouter();
-  const { addItem } = useCart();
-
   const { id: idString } = useLocalSearchParams();
   const id = parseFloat(idString === "string" ? idString : idString[0]);
 
   const { data: product, error, isLoading } = useProduct(id);
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -33,18 +31,20 @@ const ProductDetailsScreen = () => {
   if (error) {
     return <Text>Failed to fetch products</Text>;
   }
+  const Router = useRouter();
+  const { addItem } = useCart();
+
   //const product = products.find((p) => p.id.toString() === id);
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
+
+  if (!product) {
+    return <Text>Product Missing</Text>;
+  }
 
   const addToCart = () => {
     if (!product) return;
     addItem(product, selectedSize);
     Router.push("/cart");
   };
-
-  if (!product) {
-    return <Text>Product Missing</Text>;
-  }
 
   return (
     <View style={styles.container}>

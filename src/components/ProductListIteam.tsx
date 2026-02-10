@@ -1,10 +1,10 @@
-import { Product } from "@/assets/types";
 import Colors from "@/src/constants/Colors";
 import { Link, useSegments } from "expo-router";
 import { Image, Pressable, StyleSheet, Text } from "react-native";
+import { Tables } from "../types";
 
 type ProductListIteamProps = {
-  product: Product;
+  product: Tables<"products">;
 };
 
 const ProductListIteam = ({ product }: ProductListIteamProps) => {
