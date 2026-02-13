@@ -35,13 +35,7 @@ const RemoteImage = ({ path, fallback, ...imageProps }: RemoteImageProps) => {
   if (!image) {
   }
 
-  return (
-    <Image
-      style={{ width: "100%", aspectRatio: 1 }}
-      source={{ uri: image || fallback }}
-      {...imageProps}
-    />
-  );
+  return <Image source={{ uri: image || fallback }} {...imageProps} />;
 };
 
 export default RemoteImage;

@@ -9,7 +9,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import RemoteImage from "../../../components/RemoteImage";
 
@@ -56,6 +56,8 @@ const ProductDetailsScreen = () => {
       <RemoteImage
         path={product.image}
         fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
+        style={styles.image}
+        resizeMode="contain"
       />
 
       <Text style={styles.price}>Price: ${product.price.toFixed(2)}</Text>

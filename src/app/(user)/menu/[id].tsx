@@ -8,15 +8,12 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import Button from "../../../components/Button";
 import RemoteImage from "../../../components/RemoteImage";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
-
-const defaultPizzaImage =
-  "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 const ProductDetailsScreen = () => {
   const { id: idString } = useLocalSearchParams();
@@ -34,8 +31,6 @@ const ProductDetailsScreen = () => {
     return <Text>Failed to fetch products</Text>;
   }
 
-  //const product = products.find((p) => p.id.toString() === id);
-
   if (!product) {
     return <Text>Product Missing</Text>;
   }
@@ -52,6 +47,8 @@ const ProductDetailsScreen = () => {
       <RemoteImage
         path={product.image}
         fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
+        style={styles.image}
+        resizeMode="contain"
       />
 
       <Text style={styles.subtitle}>Select size</Text>

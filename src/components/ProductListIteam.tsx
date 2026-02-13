@@ -16,6 +16,7 @@ const ProductListIteam = ({ product }: ProductListIteamProps) => {
         <RemoteImage
           path={product.image}
           fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
+          style={styles.image}
         />
         <Text style={styles.title}>{product.name}</Text>
         <Text style={styles.price}>${product.price}</Text>
