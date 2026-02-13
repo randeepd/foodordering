@@ -1,5 +1,7 @@
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
+import { supabase } from "@/src/lib/supabase";
+import { randomUUID } from "expo-crypto";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -11,6 +13,8 @@ import {
   useUpdateProduct,
 } from "../../../api/products/index";
 
+import { TablesUpdate } from "@/src/database.types";
+
 const CreateScreen = () => {
   const defaultPizzaImage = "";
   const [image, setImage] = useState<string | null>(null);
@@ -18,7 +22,9 @@ const CreateScreen = () => {
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState("");
   const { id: idString } = useLocalSearchParams();
-  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+  const id = parseFloat(
+    typeof idString === "string" ? idString : idString?.[0] || "",
+  );
 
   const { data: updatingproduct, isLoading } = useProduct(id);
 
@@ -62,16 +68,43 @@ const CreateScreen = () => {
       onCreate();
     }
   };
-  const onUpdate = () => {
+  const uploadImage = async () => {
+    if (!image?.startsWith("file://")) {
+      return;
+    }
+
+    const arraybuffer = await fetch(image).then((res) => res.arrayBuffer());
+
+    const fileExt = image.split(".").pop()?.toLowerCase() ?? "jpeg";
+    const path = `${randomUUID()}.${fileExt}`;
+
+    const contentType = "image/png";
+    const { data, error } = await supabase.storage
+      .from("product-images")
+      .upload(path, arraybuffer, { contentType });
+
+    if (data) {
+      return data.path;
+    }
+  };
+  const onUpdate = async () => {
     if (!validateInput()) {
       return;
+    }
+    const imagePath = await uploadImage();
+    const newProduct: Omit<TablesUpdate<"products">, "id"> = {
+      name,
+      price: parseFloat(price),
+    };
+    if (imagePath) {
+      //image = imagePath;
     }
     UpdateProduct(
       {
         id,
         name,
         price: parseFloat(price),
-        image,
+        image: imagePath ?? image,
       },
       {
         onSuccess: () => {
@@ -85,15 +118,16 @@ const CreateScreen = () => {
     );
   };
 
-  const onCreate = () => {
+  const onCreate = async () => {
     if (!validateInput()) {
       return;
     }
+    const imagePath = await uploadImage();
     CreateProduct(
       {
         name,
         price: parseFloat(price),
-        image,
+        image: imagePath,
       },
       {
         onSuccess: () => {
@@ -138,7 +172,7 @@ const CreateScreen = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.canceled) {

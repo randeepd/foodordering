@@ -5,13 +5,13 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import Button from "../../../components/Button";
+import RemoteImage from "../../../components/RemoteImage";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
@@ -20,6 +20,8 @@ const defaultPizzaImage =
 
 const ProductDetailsScreen = () => {
   const { id: idString } = useLocalSearchParams();
+  const Router = useRouter();
+  const { addItem } = useCart();
   const id = parseFloat(idString === "string" ? idString : idString[0]);
 
   const { data: product, error, isLoading } = useProduct(id);
@@ -31,8 +33,6 @@ const ProductDetailsScreen = () => {
   if (error) {
     return <Text>Failed to fetch products</Text>;
   }
-  const Router = useRouter();
-  const { addItem } = useCart();
 
   //const product = products.find((p) => p.id.toString() === id);
 
@@ -49,10 +49,9 @@ const ProductDetailsScreen = () => {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: product.name }} />
-      <Image
-        source={{ uri: product.image || defaultPizzaImage }}
-        style={styles.image}
-        resizeMode="contain"
+      <RemoteImage
+        path={product.image}
+        fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
       />
 
       <Text style={styles.subtitle}>Select size</Text>

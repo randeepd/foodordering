@@ -6,12 +6,12 @@ import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
+import RemoteImage from "../../../components/RemoteImage";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
@@ -53,10 +53,9 @@ const ProductDetailsScreen = () => {
           ),
         }}
       />
-      <Image
-        source={{ uri: product.image || defaultPizzaImage }}
-        style={styles.image}
-        resizeMode="contain"
+      <RemoteImage
+        path={product.image}
+        fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
       />
 
       <Text style={styles.price}>Price: ${product.price.toFixed(2)}</Text>

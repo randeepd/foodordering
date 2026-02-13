@@ -1,7 +1,8 @@
 import Colors from "@/src/constants/Colors";
 import { Link, useSegments } from "expo-router";
-import { Image, Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import { Tables } from "../types";
+import RemoteImage from "./RemoteImage";
 
 type ProductListIteamProps = {
   product: Tables<"products">;
@@ -12,14 +13,9 @@ const ProductListIteam = ({ product }: ProductListIteamProps) => {
   return (
     <Link href={`/menu/${product.id}`} asChild>
       <Pressable style={styles.container}>
-        <Image
-          source={{
-            uri:
-              product.image ||
-              "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png",
-          }}
-          style={styles.image}
-          resizeMode="contain"
+        <RemoteImage
+          path={product.image}
+          fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
         />
         <Text style={styles.title}>{product.name}</Text>
         <Text style={styles.price}>${product.price}</Text>

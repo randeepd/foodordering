@@ -11,13 +11,14 @@ export default function OrdersScreen() {
   if (error) {
     return <Text>Not Able to Fetch Order.</Text>;
   }
+
   return (
     <>
       <Stack.Screen options={{ title: "Orders" }} />
       <FlatList
         data={orders}
-        contentContainerStyle={{ gap: 10, padding: 10 }}
         renderItem={({ item }) => <OrderListItem order={item} />}
+        contentContainerStyle={{ gap: 10, padding: 10 }}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import { OrderStatusList } from "@/assets/types";
-import { useOrderDetails } from "@/src/api/orders";
+import { useOrderDetails, useUpdateOrder } from "@/src/api/orders";
 import OrderItemListItem from "@/src/components/OrderItemListItem";
 import Colors from "@/src/constants/Colors";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -21,6 +21,7 @@ const OrderDetailScreen = () => {
   // Parse the full string
   const id = parseFloat(normalizedId);
   const { data: order, error, isLoading } = useOrderDetails(id);
+  const { mutate: updateOrder } = useUpdateOrder();
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -28,6 +29,10 @@ const OrderDetailScreen = () => {
   if (error || !order) {
     return <Text>Not Able to Fetch Order.</Text>;
   }
+
+  const updateStatus = async (status: OrderStatus) => {
+    updateOrder({ id, status: status });
+  };
 
   return (
     <View style={styles.container}>
@@ -46,7 +51,7 @@ const OrderDetailScreen = () => {
               {OrderStatusList.map((status) => (
                 <Pressable
                   key={status}
-                  onPress={() => console.warn("Update status")}
+                  onPress={() => updateStatus(status)}
                   style={{
                     borderColor: Colors.light.tint,
                     borderWidth: 1,
