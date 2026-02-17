@@ -5,6 +5,7 @@ import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { useCreateOrderItem } from "../api/order-items";
 import { useCreateOrder } from "../api/orders";
 import { Tables } from "../database.types";
+import { initialisePaymentSheet, openPaymentSheet } from "../lib/stripe";
 
 type CartType = {
   items: CartItem[];
@@ -68,14 +69,19 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     setItems([]);
   };
 
-  const checkOut = () => {
-    insertOrder(
+  const checkOut = async() => {
+    await initialisePaymentSheet(Math.floor(total * 100));
+    const payed = await openPaymentSheet();
+    if (!payed) {
+      return;
+    }
+    /*insertOrder(
       { total },
       {
         onSuccess: saveOrderItems,
       },
-    );
-    console.warn("checkout");
+    );*/
+    console.warn("Finish checkout");
   };
 
   const saveOrderItems = (order: Tables<"orders">) => {

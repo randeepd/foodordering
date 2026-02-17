@@ -14,6 +14,7 @@ import CartProvider from "../providers/CartProvider";
 import { useColorScheme } from "@/src/components/useColorScheme";
 import AuthProvider from "../providers/AuthProvider";
 import QueryProvider from "../providers/QueryProvider";
+import {StripeProvider} from "@stripe/stripe-react-native"
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,6 +58,7 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
       <AuthProvider>
         <QueryProvider>
           <CartProvider>
@@ -74,7 +76,8 @@ function RootLayoutNav() {
             </Stack>
           </CartProvider>
         </QueryProvider>
-      </AuthProvider>
+        </AuthProvider>
+        </StripeProvider>
     </ThemeProvider>
   );
 }
