@@ -34,7 +34,14 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "com.rndpdhillon.FoodOrdering",
+          "enableGooglePay": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

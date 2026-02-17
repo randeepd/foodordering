@@ -4,21 +4,22 @@ import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/Colors";
 import { useCart } from "../providers/CartProvider";
+import RemoteImage from "./RemoteImage";
 
 type CartListItemProps = {
   cartItem: CartItem;
 };
 
 const CartListItem = ({ cartItem }: CartListItemProps) => {
-  const defaultPizzaImage = "";
   const { updateQuantity } = useCart();
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: cartItem.product.image || defaultPizzaImage }}
+      <RemoteImage
+          path={cartItem.product.image }
+          fallback="https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png"
         style={styles.image}
         resizeMode="contain"
-      />
+        />
       <View style={{ flex: 1 }}>
         <Text style={styles.title}>{cartItem.product.name}</Text>
         <View style={styles.subtitleContainer}>
