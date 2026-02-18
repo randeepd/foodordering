@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { stripe } from '../_utils/stripe.ts';
+import { createOrRetrieveCustomer } from "../_utils/supabase.ts";
 
 console.log('Hello from Functions!');
 
@@ -7,18 +8,25 @@ serve(async (req) => {
   try {
     const { amount } = await req.json();
     console.log(amount);
+    const customer = await createOrRetrieveCustomer(req);
+
+    // Create an ephermeralKey so that the Stripe SDK can fetch the customer's stored payment methods.
+const ephemeralKey = await stripe.ephemeralKeys.create(
+	{ customer: customer },
+	{ apiVersion: "2020-08-27" }
+);
 
     // Create a PaymentIntent so that the SDK can charge the logged in customer.
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: 'usd',
-      // customer: customer,
+      customer: customer,
     });
     const res = {
       publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'),
       paymentIntent: paymentIntent.client_secret,
-      // ephemeralKey: ephemeralKey.secret,
-      // customer: customer,
+      ephemeralKey: ephemeralKey.secret,
+      customer: customer,
     };
     return new Response(JSON.stringify(res), {
       headers: { 'Content-Type': 'application/json' },
