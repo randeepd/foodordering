@@ -75,12 +75,12 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     if (!payed) {
       return;
     }
-    /*insertOrder(
+    insertOrder(
       { total },
       {
         onSuccess: saveOrderItems,
       },
-    );*/
+    );
     console.warn("Finish checkout");
   };
 

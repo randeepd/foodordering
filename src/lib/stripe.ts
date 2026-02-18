@@ -2,6 +2,7 @@ import { initPaymentSheet, presentPaymentSheet } from "@stripe/stripe-react-nati
 import { Alert } from "react-native";
 import { supabase } from "./supabase";
 
+
 // Payments
 const fetchPaymentSheetParams = async (amount: number) => {
     // Create payment session for our customer
